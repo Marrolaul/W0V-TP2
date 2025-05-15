@@ -10,6 +10,9 @@ class Ship {
     hull: null,
     shield: null,
     engine: null,
+    weapon: null,
+    radar: null,
+    navigation: null
   };
 
   constructor(shipObj) {
@@ -24,6 +27,9 @@ class Ship {
       hull: null, // class: component
       shield: null, // class: component
       engine: null, // class: component
+      weapon: null, // class: component
+      radar: null, // class: component
+      navigation: null // class: component
     };
   }
 
@@ -50,19 +56,10 @@ class Ship {
     }
   }
 
-  move() {
-    if (
-      !this.componentSlots?.engine?.isWorking() ||
-      !this.componentSlots?.thruster?.isWorking()
-    ) {
-      // TODO : the ship cant move if it doesnt have a working engine
-    }
-  }
-
   /**
    * @param {*} source could be a weapon or an asteroid or something else that has a damage value
    */
-  receiveDamage(source) {
+  takeDamage(source) {
     // TODO : you have to decide how the damage calculation works
   }
 
@@ -84,6 +81,9 @@ class Ship {
         hull: this.componentSlots.hull,
         shield: this.componentSlots.shield,
         engine: this.componentSlots.engine,
+        weapon: this.componentSlots.weapon,
+        radar: this.componentSlots.radar,
+        navigation: this.componentSlots.navigation
       },
     };
   }
@@ -102,6 +102,9 @@ class Ship {
         hull: this.componentSlots.hull,
         shield: this.componentSlots.shield,
         engine: this.componentSlots.engine,
+        weapon: this.componentSlots.weapon,
+        radar: this.componentSlots.radar,
+        navigation: this.componentSlots.navigation
       },
     });
   }
