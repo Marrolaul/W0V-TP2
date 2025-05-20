@@ -1,10 +1,20 @@
+import { json } from "express";
+import ShipModel from "./ShipModel.js";
+
 class Ship {
   id;
   name;
   type; // type: String = "fighter"
-  baseSpeed;
-  baseHealth;
-  health;
+  stats = {
+    baseHealth: null,
+    health: null,
+    speed: null,
+    acceleration: null,
+    shield: null,
+    detection: null,
+    stealth: null,
+    maneuverability: null
+  };
   componentSlots = {
     thruster: null,
     hull: null,
@@ -17,11 +27,23 @@ class Ship {
 
   constructor(shipObj) {
     this.id = shipObj.id || shipObj._id || null;
-    this.name = shipObj.name || null;
+
+    this.name = String(shipObj.name);
+    if(this.name == 'undefined' || this.name == 'null') {
+      this.name = "unidentified ship";
+    }
+
     this.type = shipObj.type || null;
-    this.baseSpeed = shipObj.baseSpeed || null;
-    this.baseHealth = shipObj.baseHealth || null;
-    this.health = shipObj.health || null;
+    this.stats =  shipObj.stats || {
+      baseHealth: 5,
+      health: 5,
+      speed: 0,
+      acceleration: 0,
+      shield: 0,
+      detection: 0,
+      stealth: 0,
+      maneuverability: 0
+    };
     this.componentSlots = shipObj.componentSlots || {
       thruster: null, // class: component
       hull: null, // class: component
@@ -31,6 +53,35 @@ class Ship {
       radar: null, // class: component
       navigation: null // class: component
     };
+  }
+
+  isValidShip() {
+    let validShip = this.isTypeValid();
+    if(validShip) {
+      validShip = this.isStatsValid();
+    }
+    return validShip;
+  }
+
+  isTypeValid() {
+    switch(this.type) {
+      case "fighter":
+        return true;
+      case "destroyer":
+        return true;
+      case "cruiser":
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  isStatsValid() {
+    let allStatsValid = true;
+    for(let[_, value] of Object.entries(this.stats)) {
+      allStatsValid = allStatsValid && typeof value === "number" && value >= 0;
+    }
+    return allStatsValid;
   }
 
   installcomponent(component, slot) {}
@@ -63,19 +114,60 @@ class Ship {
     // TODO : you have to decide how the damage calculation works
   }
 
-  save(callback) {}
+  save() {
+    return new Promise((res, rej) => {
+      if(!this.isValidShip()) {
+        return rej("invalid_ship");
+      }
+      let parsedShip = {...this};
+      ShipModel.create(parsedShip).then((jsonData) => {
+          return res(new Ship(jsonData));
+        }).catch((err) => {
+          return rej(err);
+        });
+    });
+  }
 
-  remove(callback) {}
+  update(requestBody, shipId) {
+    return new Promise((res, rej) => {
+      let filter = {_id: shipId};
+      let updatedShip = new Ship({...this, ...requestBody});
+      if (!updatedShip.isValidShip()) {
+        return rej("invalid_ship");
+      }
+      ShipModel.findByIdAndUpdate(filter, updatedShip, {new: true}).then((newShip) => {
+        return res(new Ship(newShip));
+      }).catch ((err) => {
+        return rej(err);
+      });
+    });
+  }
+
+  delete() {
+    return new Promise((res, rej) => {
+      ShipModel.deleteOne({_id: this.id}).then(() => {
+        return res(`${this.name} has been deleted.`);
+      }).catch((err) => {
+        return rej(err);
+      });
+    });
+  }
 
   toJSON() {
     return {
       id: this.id,
       name: this.name,
-      className: this.className,
       type: this.type,
-      baseSpeed: this.baseSpeed,
-      baseHealth: this.baseHealth,
-      health: this.health,
+      stats: {
+        baseHealth: this.stats.baseHealth,
+        health: this.stats.health,
+        speed: this.stats.speed,
+        acceleration: this.stats.acceleration,
+        shield: this.stats.shield,
+        detection: this.stats.detection,
+        stealth: this.stats.stealth,
+        maneuverability: this.stats.maneuverability
+      },
       componentSlots: {
         thruster: this.componentSlots.thruster,
         hull: this.componentSlots.hull,
@@ -92,11 +184,17 @@ class Ship {
     return JSON.stringify({
       id: this.id,
       name: this.name,
-      className: this.className,
       type: this.type,
-      baseSpeed: this.baseSpeed,
-      baseHealth: this.baseHealth,
-      health: this.health,
+      stats: {
+        baseHealth: this.stats.baseHealth,
+        health: this.stats.health,
+        speed: this.stats.speed,
+        acceleration: this.stats.acceleration,
+        shield: this.stats.shield,
+        detection: this.stats.detection,
+        stealth: this.stats.stealth,
+        maneuverability: this.stats.maneuverability
+      },
       componentSlots: {
         thruster: this.componentSlots.thruster,
         hull: this.componentSlots.hull,
@@ -107,6 +205,31 @@ class Ship {
         navigation: this.componentSlots.navigation
       },
     });
+  }
+
+  static getById(shipId) {
+    return new Promise((res, rej) => {
+      ShipModel.findById(shipId).then((ship) => {
+        return res(new Ship(ship));
+      }).catch((err) => {
+        return rej(err);
+      });
+    });
+  }
+
+  static getAllShips() {
+    return new Promise((res, rej) => {
+      ShipModel.find().then((data) => {
+        let listShips = [];
+        data.forEach((ship) => {
+          let shipToAdd = new Ship(ship);
+          listShips.push(shipToAdd);
+        });
+        return res(listShips);
+      }).catch((err) => {
+        return rej(err);
+      })
+    })
   }
 }
 
