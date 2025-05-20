@@ -1,12 +1,18 @@
 import mongoose from "mongoose";
 
 const ShipSchema = new mongoose.Schema({
-  _id: mongoose.SchemaTypes.ObjectId,
   name: String,
   type: String,
-  baseSpeed: Number,
-  baseHealth: Number,
-  health: Number,
+  stats: {
+    baseHealth: Number,
+    health: Number,
+    speed: Number,
+    acceleration: Number,
+    shield: Number,
+    detection: Number,
+    stealth: Number,
+    maneuverability: Number
+  },
   componentSlots: {
     thruster: { type: mongoose.SchemaTypes.ObjectId, ref: "component" },
     hull: { type: mongoose.SchemaTypes.ObjectId, ref: "component" },
