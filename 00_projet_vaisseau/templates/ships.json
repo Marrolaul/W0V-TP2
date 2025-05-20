@@ -1,1 +1,29 @@
-[]
+[
+    {
+    "_id": {
+        "$oid": "682cbf4f040f9c2923b0df57"
+    },
+    "name": "Geronimo",
+    "type": "fighter",
+    "stats": {
+        "baseHealth": 15,
+        "health": 15,
+        "speed": 0,
+        "acceleration": 0,
+        "shield": 0,
+        "detection": 0,
+        "stealth": 0,
+        "maneuverability": 0
+    },
+    "componentSlots": {
+        "thruster": null,
+        "hull": null,
+        "shield": null,
+        "engine": null,
+        "weapon": null,
+        "radar": null,
+        "navigation": null
+    },
+    "__v": 0
+    }
+]
