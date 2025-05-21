@@ -84,7 +84,10 @@ class Ship {
     return allStatsValid;
   }
 
-  installcomponent(component, slot) {}
+  installcomponent(componentToInstall) {
+
+    this.componentSlots[componentToInstall.type] = componentToInstall.id;
+  }
 
   move() {
     if (
@@ -128,7 +131,7 @@ class Ship {
     });
   }
 
-  update(requestBody, shipId) {
+  update(requestBody = this, shipId = this.id) {
     return new Promise((res, rej) => {
       let filter = {_id: shipId};
       let updatedShip = new Ship({...this, ...requestBody});

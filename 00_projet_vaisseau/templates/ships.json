@@ -1,1 +1,50 @@
-[]
+[
+    {
+        "name": "Geronimo", 
+        "type": "fighter", 
+        "stats": 
+        {
+            "baseHealth": 150, 
+            "health":150, 
+            "speed":0, 
+            "acceleration":0, 
+            "shield":0, 
+            "detection":0, 
+            "stealth":0, 
+            "maneuverability":0
+        },
+        "componentsSlots": {}
+    },
+    {
+        "name": "Avanti", 
+        "type": "destroyer", 
+        "stats": 
+        {
+            "baseHealth": 200, 
+            "health":200, 
+            "speed":0, 
+            "acceleration":0, 
+            "shield":0, 
+            "detection":0, 
+            "stealth":0, 
+            "maneuverability":0
+        },
+        "componentsSlots": {}
+    },
+    {
+        "name": "Enterprise", 
+        "type": "cruiser", 
+        "stats": 
+        {
+            "baseHealth": 250, 
+            "health":250, 
+            "speed":0, 
+            "acceleration":0, 
+            "shield":0, 
+            "detection":0, 
+            "stealth":0, 
+            "maneuverability":0
+        },
+        "componentsSlots": {}
+    }
+]
