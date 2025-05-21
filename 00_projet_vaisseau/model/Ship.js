@@ -1,5 +1,6 @@
 import { json } from "express";
 import ShipModel from "./ShipModel.js";
+import ComponentController from "../controller/ComponentController.js";
 
 class Ship {
   id;
@@ -84,8 +85,15 @@ class Ship {
     return allStatsValid;
   }
 
-  installcomponent(componentToInstall) {
+  installComponent(componentToInstall) {
     this.componentSlots[componentToInstall.type] = componentToInstall.id;
+    this.stats[componentToInstall.targetStats] += componentToInstall.value;
+  }
+
+  removeComponent(componentSlot) {
+    removedItem = ComponentController.getById(this.componentSlots[componentSlot]);
+    this.componentSlots[componentSlot] = null;
+    this.stats[componentSlot] -= removedItem.value;
   }
 
   move() {
