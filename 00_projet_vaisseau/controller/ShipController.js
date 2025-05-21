@@ -29,7 +29,7 @@ const ShipController = {
         console.log(err);
         if(err == "invalid_ship")
         {
-          res.status(400).send("Cannot add this ship to the database");
+          res.status(400).send("Cannot add this ship to the database patate");
           return;
         }
         res.status(500).send(err);
