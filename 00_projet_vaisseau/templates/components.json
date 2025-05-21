@@ -5,7 +5,7 @@
         "health": 100,
         "targetStat": "speed",
         "value": 50,
-        "isFunctionnal": true,
+        "amount": 300,
         "isEquiped": false
     },
     {
@@ -14,7 +14,7 @@
         "health": 200,
         "targetStat": "speed",
         "value": 80,
-        "isFunctionnal": true,
+        "amount": 300,
         "isEquiped": false
     },
     {
@@ -23,7 +23,7 @@
         "health": 100,
         "targetStat": "hp",
         "value": 50,
-        "isFunctionnal": true,
+        "amount": 1,
         "isEquiped": false
     },
     {
@@ -32,7 +32,7 @@
         "health": 200,
         "targetStat": "hp",
         "value": 80,
-        "isFunctionnal": true,
+        "amount": 1,
         "isEquiped": false
     },
     {
@@ -41,7 +41,7 @@
         "health": 100,
         "targetStat": "acceleration",
         "value": 50,
-        "isFunctionnal": true,
+        "amount": 300,
         "isEquiped": false
     },
     {
@@ -50,7 +50,7 @@
         "health": 200,
         "targetStat": "acceleration",
         "value": 80,
-        "isFunctionnal": true,
+        "amount": 300,
         "isEquiped": false
     },
     {
@@ -59,7 +59,7 @@
         "health": 100,
         "targetStat": "shield",
         "value": 50,
-        "isFunctionnal": true,
+        "amount": 1,
         "isEquiped": false
     },
     {
@@ -68,7 +68,7 @@
         "health": 200,
         "targetStat": "shield",
         "value": 80,
-        "isFunctionnal": true,
+        "amount": 1,
         "isEquiped": false
     },
     {
@@ -77,7 +77,7 @@
         "health": 100,
         "targetStat": "damage",
         "value": 50,
-        "isFunctionnal": true,
+        "amount": 30,
         "isEquiped": false
     },
     {
@@ -86,7 +86,7 @@
         "health": 200,
         "targetStat": "damage",
         "value": 80,
-        "isFunctionnal": true,
+        "amount": 40,
         "isEquiped": false
     },
     {
@@ -95,7 +95,7 @@
         "health": 100,
         "targetStat": "detection",
         "value": 50,
-        "isFunctionnal": true,
+        "amount": 1,
         "isEquiped": false
     },
     {
@@ -104,7 +104,7 @@
         "health": 200,
         "targetStat": "detection",
         "value": 80,
-        "isFunctionnal": true,
+        "amount": 1,
         "isEquiped": false
     },
     {
@@ -113,7 +113,7 @@
         "health": 100,
         "targetStat": "manoeuvrability",
         "value": 50,
-        "isFunctionnal": true,
+        "amount": 1,
         "isEquiped": false
     },
     {
@@ -122,7 +122,7 @@
         "health": 200,
         "targetStat": "manoeuvrability",
         "value": 80,
-        "isFunctionnal": true,
+        "amount": 1,
         "isEquiped": false
     }
 ]

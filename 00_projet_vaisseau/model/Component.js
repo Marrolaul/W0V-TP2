@@ -1,3 +1,5 @@
+import ComponentModel from "./ComponentModel.js";
+
 class Component {
   id;
   model;
@@ -5,7 +7,7 @@ class Component {
   health;
   targetStat;
   value;
-  isFunctionnal;
+  amount;
   isEquiped;
   
   constructor(compObj) {
@@ -15,17 +17,17 @@ class Component {
     this.health = compObj.health || null;
     this.targetStat = compObj.targetStat || null;
     this.value = compObj.value || null;
-    this.isFunctionnal = compObj.isFunctionnal || true;
+    this.amount = compObj.amount || 0;
     this.isEquiped = compObj.isEquiped || false;
   }
 
   validateObject() {
     if (!this.isValidModel()) {return "Component must have a model name"}
     if (!this.isValidType()) {return "Type is invalid or missing"}
-    if (!this.isValidNumber(this.health)) {return "Health value is invalid or missing"}
+    if (!this.isValidNumber(this.health)) {return "Health is invalid or missing"}
     if (!this.isValidTargetStat()) {return `Component of type '${this.type}' must have the value '${validComponentStats[this.type]}'`}
-    if (!this.isValidNumber(this.value)) {return "Stat value is invalid or missing"}
-    if (!this.isValidBool(this.isFunctionnal)) {return "isFunctionnal is invalid or missing"}
+    if (!this.isValidNumber(this.value)) {return "Value is invalid or missing"}
+    if (!this.isValidNumber(this.amount)) {return "Amount is invalid or missing"}
     if (!this.isValidBool(this.isEquiped)) {return "isEquiped is invalid or missing"}
   }
 
@@ -50,7 +52,7 @@ class Component {
   }
 
   isWorking() {
-    return this.isFunctionnal && this.isEquiped;
+    return this.amount && this.isEquiped;
   }
 
   /**
@@ -79,25 +81,36 @@ class Component {
         health: this.health,
         targetStat: this.targetStat,
         value: this.value,
-        isFunctionnal: this.isFunctionnal
+        amount: this.amount,
+        isEquiped: this.isEquiped
     };
   }
 
   toString() {
     return JSON.stringify(this.toJSON());
   }
+
+  static async getById(compId) {
+    return new Promise((res, rej) => {
+      ComponentModel.findById(compId).then((comp) => {
+        return res(new Component(comp));
+      }).catch((err) => {
+        return rej(err);
+      });
+    })
+  }
 }
 
 export const validComponentStats = {
-    engine: "speed",
-    hull: "hp",
-    thruster: "acceleration",
-    shield: "shield",
-    weapon: "damage",
-    radar: "detection",
-    navigation: "manoeuvrability"
-  }
+  engine: "speed",
+  hull: "hp",
+  thruster: "acceleration",
+  shield: "shield",
+  weapon: "damage",
+  radar: "detection",
+  navigation: "manoeuvrability"
+}
 
-export const validComponentKeys = ['model', 'type', 'health', 'targetStat', 'value', 'isFunctionnal']
+export const validComponentKeys = ['model', 'type', 'health', 'targetStat', 'value', 'amount', 'isEquiped']
 
 export default Component;
