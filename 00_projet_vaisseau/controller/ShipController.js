@@ -1,5 +1,9 @@
 import { Types } from "mongoose";
 import Ship from "../model/Ship.js";
+import {promises as fs} from 'fs';
+import Component from "../model/Component.js";
+
+const batchShips = "./templates/ships.json";
 
 const ShipController = {
   getAll: (_, res) => {
@@ -55,8 +59,32 @@ const ShipController = {
       return;
     });
   },
-  batchCreate: (req, res) => {
-    // TODO : receive an array of ships and create them all. Should be usefull to populate you database
+  batchCreate: (_, res) => {
+    fs.readFile(batchShips).then((data) => {
+      let shipsList = JSON.parse(data);
+      const savedShip = [];
+
+      shipsList.forEach((ship) => {
+        let newShip = new Ship(ship);        
+        savedShip.push(newShip.save());        
+      });
+
+      Promise.all(savedShip).then(() => {
+        Ship.getAllShips().then((result) => {
+          res.status(200).send(result);
+        }).catch((err) => {
+          console.log(err);
+          res.status(500).send("Internal error");
+        });
+      }).catch((err) => {
+        console.log(err);
+        res.status(500).send("Internal error");
+      });
+    }).catch((err) => {
+      console.log(err);
+      res.status(500).send("Internal error");
+    });
+    
   },
   remove: (req, res) => {
     Ship.getById(req.params.shipId).then((shipFound) => {
@@ -71,5 +99,24 @@ const ShipController = {
       res.status(404).send("Ship not found in database");
     });
   },
+  equipComponent: (req, res) => {
+    Ship.getById(req.params.shipId).then((shipFound) => {
+      Component.getById(req.body.id).then((newComponent) => {
+        shipFound.installComponent(newComponent);
+        shipFound.update().then((result) => {
+          res.status(202).send(result);
+        }).catch((err) => {
+          console.log(err);
+          res.status(500).send("Internal server error");
+        });
+      }).catch((err) => {
+        console.log(err);
+        res.status(500).send("Internal server error");
+      })
+    }).catch((err) => {
+      console.log(err);
+      res.status(404).send("Ship not found in the database");
+    })
+  }
 };
 export default ShipController;

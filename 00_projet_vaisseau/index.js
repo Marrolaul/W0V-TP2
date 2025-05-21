@@ -7,8 +7,10 @@ const port = 3000;
 
 app.use(express.json());
 
-// mongodb+srv://dev:dev@cluster0.ylc53cj.mongodb.net/character_app?retryWrites=true&w=majority&appName=Cluster0
-const uri = "mongodb+srv://dev:dev@cluster0.ylc53cj.mongodb.net/character_app?retryWrites=true&w=majority&appName=Cluster0";
+// MichUri = "mongodb+srv://ptrol:8FGNmQmeusALIBVr@cluster0.l5cl5il.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+// WilliamUri = "mongodb+srv://dev:dev@cluster0.ylc53cj.mongodb.net/character_app?retryWrites=true&w=majority&appName=Cluster0";
+
+const uri = "mongodb+srv://ptrol:8FGNmQmeusALIBVr@cluster0.l5cl5il.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const clientOptions = {
   serverApi: { version: "1", strict: true, deprecationErrors: true },
 };

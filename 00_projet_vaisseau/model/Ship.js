@@ -1,5 +1,6 @@
 import { json } from "express";
 import ShipModel from "./ShipModel.js";
+import Component from "./Component.js";
 
 class Ship {
   id;
@@ -84,7 +85,17 @@ class Ship {
     return allStatsValid;
   }
 
-  installcomponent(component, slot) {}
+  installComponent(componentToInstall) {
+    this.componentSlots[componentToInstall.type] = componentToInstall.id;
+    if (componentToInstall.targetStat != "damage")
+    {
+      this.stats[componentToInstall.targetStat] += componentToInstall.value;
+    }
+  }
+
+  removeComponent() {
+    
+  }
 
   move() {
     if (
@@ -128,7 +139,7 @@ class Ship {
     });
   }
 
-  update(requestBody, shipId) {
+  update(requestBody = this, shipId = this.id) {
     return new Promise((res, rej) => {
       let filter = {_id: shipId};
       let updatedShip = new Ship({...this, ...requestBody});
