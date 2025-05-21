@@ -85,7 +85,6 @@ class Ship {
   }
 
   installcomponent(componentToInstall) {
-
     this.componentSlots[componentToInstall.type] = componentToInstall.id;
   }
 
