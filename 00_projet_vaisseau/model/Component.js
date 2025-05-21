@@ -6,6 +6,7 @@ class Component {
   targetStat;
   value;
   isFunctionnal;
+  isEquiped;
   
   constructor(compObj) {
     this.id = compObj.id || null;
@@ -14,7 +15,8 @@ class Component {
     this.health = compObj.health || null;
     this.targetStat = compObj.targetStat || null;
     this.value = compObj.value || null;
-    this.isFunctionnal = compObj.isFunctionnal || null;
+    this.isFunctionnal = compObj.isFunctionnal || true;
+    this.isEquiped = compObj.isEquiped || false;
   }
 
   validateObject() {
@@ -24,6 +26,7 @@ class Component {
     if (!this.isValidTargetStat()) {return `Component of type '${this.type}' must have the value '${validComponentStats[this.type]}'`}
     if (!this.isValidNumber(this.value)) {return "Stat value is invalid or missing"}
     if (!this.isValidBool(this.isFunctionnal)) {return "isFunctionnal is invalid or missing"}
+    if (!this.isValidBool(this.isEquiped)) {return "isEquiped is invalid or missing"}
   }
 
   isValidModel() {
@@ -44,6 +47,10 @@ class Component {
 
   isValidBool(value) {
     return typeof value === 'boolean';
+  }
+
+  isWorking() {
+    return this.isFunctionnal && this.isEquiped;
   }
 
   /**

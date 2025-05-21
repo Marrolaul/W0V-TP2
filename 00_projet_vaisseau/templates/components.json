@@ -1,0 +1,128 @@
+[
+    {
+        "model": "Basic Engine",
+        "type": "engine",
+        "health": 100,
+        "targetStat": "speed",
+        "value": 50,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "FastAF Engine",
+        "type": "engine",
+        "health": 200,
+        "targetStat": "speed",
+        "value": 80,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Basic Hull",
+        "type": "hull",
+        "health": 100,
+        "targetStat": "hp",
+        "value": 50,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Thick Hull",
+        "type": "hull",
+        "health": 200,
+        "targetStat": "hp",
+        "value": 80,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Basic Thruster",
+        "type": "thruster",
+        "health": 100,
+        "targetStat": "acceleration",
+        "value": 50,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Turbo Thruster",
+        "type": "thruster",
+        "health": 200,
+        "targetStat": "acceleration",
+        "value": 80,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Basic Shield",
+        "type": "shield",
+        "health": 100,
+        "targetStat": "shield",
+        "value": 50,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Thick Shield",
+        "type": "shield",
+        "health": 200,
+        "targetStat": "shield",
+        "value": 80,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Basic Weapon",
+        "type": "weapon",
+        "health": 100,
+        "targetStat": "damage",
+        "value": 50,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Rapid Fire Weapon",
+        "type": "weapon",
+        "health": 200,
+        "targetStat": "damage",
+        "value": 80,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Basic Radar",
+        "type": "radar",
+        "health": 100,
+        "targetStat": "detection",
+        "value": 50,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Infrared Radar",
+        "type": "radar",
+        "health": 200,
+        "targetStat": "detection",
+        "value": 80,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Basic Navigation",
+        "type": "navigation",
+        "health": 100,
+        "targetStat": "manoeuvrability",
+        "value": 50,
+        "isFunctionnal": true,
+        "isEquiped": false
+    },
+    {
+        "model": "Advanced Navigation",
+        "type": "navigation",
+        "health": 200,
+        "targetStat": "manoeuvrability",
+        "value": 80,
+        "isFunctionnal": true,
+        "isEquiped": false
+    }
+]

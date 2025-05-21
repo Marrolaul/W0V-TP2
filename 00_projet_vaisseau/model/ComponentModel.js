@@ -6,7 +6,8 @@ const ComponentSchema = new mongoose.Schema({
   health: Number,
   targetStat: String,
   value: Number,
-  isFunctionnal: Boolean
+  isFunctionnal: Boolean,
+  isEquiped: Boolean
 });
 
 const ComponentModel = mongoose.model("Component", ComponentSchema);
