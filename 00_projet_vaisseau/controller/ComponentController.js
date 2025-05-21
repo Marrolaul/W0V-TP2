@@ -15,10 +15,8 @@ const ComponentController = {
     res.status(200).json(components);
   },
   getById: async (req, res) => {
-    const compId = req.params.id;
-
     try {
-      const component = await ComponentModel.findById(compId);
+      const component = await Component.getById(req.params.id);
 
       if (!component) {
         return res.status(404).json({ error: "Component not found" })
