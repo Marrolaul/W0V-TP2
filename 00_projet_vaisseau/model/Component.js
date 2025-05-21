@@ -15,8 +15,8 @@ class Component {
     this.health = compObj.health || null;
     this.targetStat = compObj.targetStat || null;
     this.value = compObj.value || null;
-    this.isFunctionnal = compObj.isFunctionnal || null;
-    this.isEquiped = compObj.isEquiped || null;
+    this.isFunctionnal = compObj.isFunctionnal || true;
+    this.isEquiped = compObj.isEquiped || false;
   }
 
   validateObject() {
@@ -49,6 +49,10 @@ class Component {
     return typeof value === 'boolean';
   }
 
+  isWorking() {
+    return this.isFunctionnal && this.isEquiped;
+  }
+
   /**
    * @param {*} source could be a weapon or an asteroid or something else that has a damage value
    */
@@ -63,6 +67,10 @@ class Component {
     // TODO : you have to decide how the damage calculation works
   }
 
+  save(callback) {}
+
+  remove(callback) {}
+
   toJSON() {
     return {
         id: this.id,
@@ -71,8 +79,7 @@ class Component {
         health: this.health,
         targetStat: this.targetStat,
         value: this.value,
-        isFunctionnal: this.isFunctionnal,
-        isEquiped: this.isEquiped
+        isFunctionnal: this.isFunctionnal
     };
   }
 
