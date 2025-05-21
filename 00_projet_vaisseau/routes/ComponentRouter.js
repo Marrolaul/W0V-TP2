@@ -10,6 +10,8 @@ ComponentRouter.post("/", ComponentController.create);
 ComponentRouter.post("/batch", ComponentController.batchCreate);
 ComponentRouter.delete("/:id", ComponentController.delete);
 
+
+
 // TODO : you have to implements the routes to use the component
 ComponentRouter.post("/:shipId/attack", () => {
   // TODO: req.body should somewhat look like : { defenderShipId: ID}

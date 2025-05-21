@@ -1,7 +1,8 @@
 import { Types } from "mongoose";
 import ComponentModel from "../model/ComponentModel.js";
 import Component from "../model/Component.js";
-import { validComponentKeys } from "../model/Component.js";
+import validComponentKeys from "../model/Component.js";
+import fs from 'fs';
 
 const ComponentController = {
   getAll: async (req, res) => {
@@ -74,11 +75,8 @@ const ComponentController = {
     }
   },
   batchCreate: async (req, res) => {
-    const components = req.body;
-
-    if (!Array.isArray(components)) {
-      return res.status(400).json({ error: "Body must be an array of components" });
-    }
+    const path = "./templates/components.json";
+    const components = JSON.parse(fs.readFileSync(path));
 
     try {
       const result = await ComponentModel.insertMany(components, { ordered: false })

@@ -6,6 +6,7 @@ class Component {
   targetStat;
   value;
   isFunctionnal;
+  isEquiped;
   
   constructor(compObj) {
     this.id = compObj.id || null;
@@ -15,6 +16,7 @@ class Component {
     this.targetStat = compObj.targetStat || null;
     this.value = compObj.value || null;
     this.isFunctionnal = compObj.isFunctionnal || null;
+    this.isEquiped = compObj.isEquiped || null;
   }
 
   validateObject() {
@@ -24,6 +26,7 @@ class Component {
     if (!this.isValidTargetStat()) {return `Component of type '${this.type}' must have the value '${validComponentStats[this.type]}'`}
     if (!this.isValidNumber(this.value)) {return "Stat value is invalid or missing"}
     if (!this.isValidBool(this.isFunctionnal)) {return "isFunctionnal is invalid or missing"}
+    if (!this.isValidBool(this.isEquiped)) {return "isEquiped is invalid or missing"}
   }
 
   isValidModel() {
@@ -60,10 +63,6 @@ class Component {
     // TODO : you have to decide how the damage calculation works
   }
 
-  save(callback) {}
-
-  remove(callback) {}
-
   toJSON() {
     return {
         id: this.id,
@@ -72,7 +71,8 @@ class Component {
         health: this.health,
         targetStat: this.targetStat,
         value: this.value,
-        isFunctionnal: this.isFunctionnal
+        isFunctionnal: this.isFunctionnal,
+        isEquiped: this.isEquiped
     };
   }
 
