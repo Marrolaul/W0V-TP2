@@ -1,7 +1,7 @@
 import { Types } from "mongoose";
 import Ship from "../model/Ship.js";
 import {promises as fs} from 'fs';
-import ComponentController from "./ComponentController.js";
+import Component from "../model/Component.js";
 
 const batchShips = "./templates/ships.json";
 
@@ -33,7 +33,7 @@ const ShipController = {
         console.log(err);
         if(err == "invalid_ship")
         {
-          res.status(400).send("Cannot add this ship to the database patate");
+          res.status(400).send("Cannot add this ship to the database");
           return;
         }
         res.status(500).send(err);
@@ -101,14 +101,18 @@ const ShipController = {
   },
   equipComponent: (req, res) => {
     Ship.getById(req.params.shipId).then((shipFound) => {
-      componentToEquip = ComponentController.getById(req.body);
-      shipFound.installComponent(componentToEquip);
-      shipFound.update().then((result) => {
-        res.status(202).send(result.ToJson());
+      Component.getById(req.body.id).then((newComponent) => {
+        shipFound.installComponent(newComponent);
+        shipFound.update().then((result) => {
+          res.status(202).send(result);
+        }).catch((err) => {
+          console.log(err);
+          res.status(500).send("Internal server error");
+        });
       }).catch((err) => {
         console.log(err);
         res.status(500).send("Internal server error");
-      });
+      })
     }).catch((err) => {
       console.log(err);
       res.status(404).send("Ship not found in the database");

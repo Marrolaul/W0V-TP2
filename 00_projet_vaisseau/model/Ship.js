@@ -1,6 +1,6 @@
 import { json } from "express";
 import ShipModel from "./ShipModel.js";
-import ComponentController from "../controller/ComponentController.js";
+import Component from "./Component.js";
 
 class Ship {
   id;
@@ -87,13 +87,14 @@ class Ship {
 
   installComponent(componentToInstall) {
     this.componentSlots[componentToInstall.type] = componentToInstall.id;
-    this.stats[componentToInstall.targetStats] += componentToInstall.value;
+    if (componentToInstall.targetStat != "damage")
+    {
+      this.stats[componentToInstall.targetStat] += componentToInstall.value;
+    }
   }
 
-  removeComponent(componentSlot) {
-    removedItem = ComponentController.getById(this.componentSlots[componentSlot]);
-    this.componentSlots[componentSlot] = null;
-    this.stats[componentSlot] -= removedItem.value;
+  removeComponent() {
+    
   }
 
   move() {
