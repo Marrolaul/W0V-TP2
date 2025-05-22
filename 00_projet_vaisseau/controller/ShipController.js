@@ -19,7 +19,37 @@ const ShipController = {
       res.status(200).send(result);
     }).catch((err) => {
       console.log(err);
-      res.status(404).send("Ship not found in database");
+      res.status(404).send("Ship not found in the database");
+    });
+  },
+  getAllInfoById: (req, res) => {
+    Ship.getById(req.params.shipId).then((shipFound) => {
+      let fullInfoShip = shipFound.toJSON();
+      const infoComponents = [];
+
+      for (const [type, value] of Object.entries(fullInfoShip.componentSlots)) {
+        if (value != null) {
+          infoComponents.push(Component.getById(value)
+            .then((componentToDisplay) => {
+              fullInfoShip.componentSlots[type] = componentToDisplay.toJSON();
+            }).catch((err) => {
+              console.log(err);
+              return err;
+            })
+          );          
+        }
+      };
+
+      Promise.all(infoComponents).then(() => {
+        res.status(200).send(fullInfoShip);
+      }).catch((err) => {
+        console.log(err);
+        res.status(500).send("Internal error");
+      });
+      
+    }).catch((err) => {
+      console.log(err);
+      res.status(404).send("Ship not found in the database");
     });
   },
   create: (req, res) => {
@@ -96,7 +126,7 @@ const ShipController = {
       });
     }).catch((err) => {
       console.log(err);
-      res.status(404).send("Ship not found in database");
+      res.status(404).send("Ship not found in the database");
     });
   },
   equipComponent: (req, res) => {
@@ -111,7 +141,7 @@ const ShipController = {
         });
       }).catch((err) => {
         console.log(err);
-        res.status(500).send("Internal server error");
+        res.status(404).send("Component not found in the database");
       })
     }).catch((err) => {
       console.log(err);

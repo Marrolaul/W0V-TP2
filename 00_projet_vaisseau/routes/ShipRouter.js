@@ -5,11 +5,15 @@ const ShipRouter = express.Router();
 
 ShipRouter.get("/", ShipController.getAll);
 ShipRouter.get("/:shipId", ShipController.getById);
-ShipRouter.post("/create", ShipController.create);
-ShipRouter.put("/update/:shipId", ShipController.update);
-ShipRouter.delete("/delete/:shipId", ShipController.remove);
+ShipRouter.get("/completeInfo/:shipId", ShipController.getAllInfoById);
+
 ShipRouter.post("/batch",ShipController.batchCreate);
+ShipRouter.post("/create", ShipController.create);
+
+ShipRouter.put("/update/:shipId", ShipController.update);
 ShipRouter.put("/equipComponent/:shipId", ShipController.equipComponent);
+
+ShipRouter.delete("/delete/:shipId", ShipController.remove);
 
 // TODO : you have to implements the routes to use the ships
 ShipRouter.post("/:shipId/attack", () => {
