@@ -7,20 +7,15 @@ const ComponentController = {
       const result = await Component.getAll();
       res.status(200).send(result);
     } catch (err) {
-      res.status(500).send(err.message);
+      next(err.message);
     }
   },
   getById: async (req, res, next) => {
     try {
       const component = await Component.getById(req.params.id);
-
-      if (!component) {
-        next("component_not_found")
-      }
-
       res.status(200).json(component);
     } catch (err) {
-      next(err);
+      next(err.message);
     }
   },
   update: async (req, res) => {
@@ -29,19 +24,19 @@ const ComponentController = {
       const validKeysFound = keysToUpdate.filter(key => Component.validComponentKeys.includes(key))
 
       if (validKeysFound.length === 0) {
-        return res.status(400).send("No valid keys to update component")
+        next("bad_request")
       }
 
       const result = await Component.update(req.params.id, req.body);
 
       res.status(200).send(result);
     } catch (err) {
-      res.status(500).send(err.message);
+      next(err.message);
     }
   },
   create: async (req, res) => {
     if (!req.body) {
-      return res.status(422).send("Request must have a body");
+      return res.status(422).send("bad_request");
     }
 
     try {

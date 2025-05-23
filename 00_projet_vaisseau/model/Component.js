@@ -98,7 +98,7 @@ class Component {
   static async getAll() {
     let data = await ComponentModel.find();
     if (!data || data.length === 0) {
-      throw new Error("No components found");
+      throw new Error("component_not_found");
     }
     return data.map(comp => new Component(comp))
   }
@@ -106,7 +106,7 @@ class Component {
   static async getById(id) {
     let component = await ComponentModel.findById(id);
     if (!component || component === null) {
-      throw new Error("Component not found");
+      throw new Error("component_not_found");
     }
     return new Component(component);
   }
@@ -114,7 +114,7 @@ class Component {
   static async update(id, newData) {
     const updatedComp = await ComponentModel.findByIdAndUpdate(id, newData, { new: true, runValidators: true });
     if (!updatedComp) {
-      throw new Error("Component not found");
+      throw new Error("component_not_found");
     }
     return new Component(updatedComp);
   }

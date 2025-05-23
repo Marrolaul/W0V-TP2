@@ -17,7 +17,7 @@ const traductionError = {
   },
   component_not_found : {
     statusCode : 404,
-    en : "Component nor found in the database",
+    en : "Component not found in the database",
     fr : "Composant non présent dans la base de données"
   },
   bad_request : {
