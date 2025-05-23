@@ -24,6 +24,11 @@ const traductionError = {
     statusCode : 400,
     en : "Error(s) in the request",
     fr : "Erreure(s) dans la requête"
+  },
+  already_installed : {
+    statusCode : 202,
+    en : "The requested component is already installed on another ship",
+    fr : "La pièce demandée est dans un autre vaisseau"
   }
 }
 
@@ -32,7 +37,7 @@ app.use(express.json());
 // MichUri = "mongodb+srv://ptrol:8FGNmQmeusALIBVr@cluster0.l5cl5il.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 // WilliamUri = "mongodb+srv://dev:dev@cluster0.ylc53cj.mongodb.net/character_app?retryWrites=true&w=majority&appName=Cluster0";
 
-const uri = "mongodb+srv://dev:dev@cluster0.ylc53cj.mongodb.net/character_app?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "mongodb+srv://ptrol:8FGNmQmeusALIBVr@cluster0.l5cl5il.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 const clientOptions = {
   serverApi: { version: "1", strict: true, deprecationErrors: true },
 };

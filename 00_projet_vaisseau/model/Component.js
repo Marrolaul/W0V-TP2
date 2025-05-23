@@ -64,7 +64,24 @@ class Component {
   }
 
   isWorking() {
-    return this.amount > 0 && this.isEquiped;
+    return this.amount && this.isEquiped;
+  }
+
+  install() {
+    this.isEquiped = true;
+    Component.update(this.id, this);
+  }
+
+  uninstall() {
+    this.isEquiped = false;
+    Component.update(this.id, this);
+  }
+
+  /**
+   * @param {*} source could be a weapon or an asteroid or something else that has a damage value
+   */
+  takeDamage(source) {
+    // TODO : you have to decide how the damage calculation works
   }
 
   /**
