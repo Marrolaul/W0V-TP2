@@ -1,21 +1,5 @@
 [
     {
-        "name": "Geronimo", 
-        "type": "fighter", 
-        "stats": 
-        {
-            "baseHealth": 150, 
-            "health":150, 
-            "speed":0, 
-            "acceleration":0, 
-            "shield":0, 
-            "detection":0, 
-            "stealth":0, 
-            "maneuverability":0
-        },
-        "componentsSlots": {}
-    },
-    {
         "name": "Avanti", 
         "type": "destroyer", 
         "stats": 

@@ -2,6 +2,7 @@ import { Error, Types } from "mongoose";
 import Ship from "../model/Ship.js";
 import {promises as fs} from 'fs';
 import Component from "../model/Component.js";
+import { get } from "http";
 
 const batchShips = "./templates/ships.json";
 
@@ -108,20 +109,23 @@ const ShipController = {
     });
   },
   equipComponent: (req, res, next) => {
-    Ship.getById(req.params.shipId).then((shipFound) => {
-      Component.getById(req.body.id).then((newComponent) => {
-        shipFound.installComponent(newComponent);
-        shipFound.update().then((result) => {
-          res.status(202).send(result);
+    const getAllData = [];
+    getAllData.push(Ship.getById(req.params.shipId));
+    getAllData.push(Component.getById(req.body.id));
+
+    Promise.all(getAllData).then((resolvedPromises) => {
+      resolvedPromises[0].removeComponent(resolvedPromises[1].type).then((shipToModify) => {
+        shipToModify.installComponent(resolvedPromises[1]).then((modifiedShip) => {
+          res.status(202).send(modifiedShip);
         }).catch((err) => {
           next(err);
         });
       }).catch((err) => {
         next(err);
-      })
+      });
     }).catch((err) => {
       next(err);
-    })
+    });
   }
 };
 export default ShipController;

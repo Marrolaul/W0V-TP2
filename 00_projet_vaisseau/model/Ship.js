@@ -86,15 +86,38 @@ class Ship {
   }
 
   installComponent(componentToInstall) {
-    this.componentSlots[componentToInstall.type] = componentToInstall.id;
-    if (componentToInstall.targetStat != "damage")
-    {
-      this.stats[componentToInstall.targetStat] += componentToInstall.value;
-    }
+    return new Promise((res, rej) => {
+      if(componentToInstall.isEquiped == true) {
+        return rej("already_installed");
+      }
+      this.componentSlots[componentToInstall.type] = componentToInstall.id;
+      componentToInstall.install();
+      if (componentToInstall.targetStat != "damage")
+      {
+        this.stats[componentToInstall.targetStat] += componentToInstall.value;
+      }
+      this.update().then((updatedShip) => {
+          return res(updatedShip);
+        }).catch((err) => {
+          return rej(err);
+      });
+    })
   }
 
-  removeComponent() {
-    
+  removeComponent(componentType) {
+    return new Promise((res, rej) => {
+      if (this.componentSlots[componentType] == null) {
+        return res(this);
+      }
+      Component.getById(this.componentSlots[componentType]).then((componentToRemove) => {
+          this.stats[componentToRemove.targetStat] -= componentToRemove.value;
+          this.componentSlots[componentType] = null;
+          componentToRemove.uninstall();
+          return res(this);
+        }).catch((err) => {
+          return rej(err);
+      });
+    });
   }
 
   move() {
