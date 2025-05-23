@@ -3,12 +3,12 @@ import ComponentController from "../controller/ComponentController.js";
 
 const ComponentRouter = express.Router();
 
-ComponentRouter.get("/", ComponentController.getAll);
-ComponentRouter.get("/:id", ComponentController.getById);
-ComponentRouter.put("/:id", ComponentController.update);
-ComponentRouter.post("/", ComponentController.create);
+ComponentRouter.get("/get/all", ComponentController.getAll);
+ComponentRouter.get("/get/:id", ComponentController.getById);
+ComponentRouter.put("/update/:id", ComponentController.update);
+ComponentRouter.post("/create", ComponentController.create);
 ComponentRouter.post("/batch", ComponentController.batchCreate);
-ComponentRouter.delete("/:id", ComponentController.delete);
+ComponentRouter.delete("/delete/:id", ComponentController.delete);
 
 
 

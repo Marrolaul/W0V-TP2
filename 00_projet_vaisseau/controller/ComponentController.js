@@ -1,18 +1,14 @@
 import { Types } from "mongoose";
-import ComponentModel from "../model/ComponentModel.js";
 import Component from "../model/Component.js";
-import validComponentKeys from "../model/Component.js";
-import fs from 'fs';
 
 const ComponentController = {
   getAll: async (req, res) => {
-    const components = await ComponentModel.find();
-
-    if (!components || components.length === 0) {
-      return res.status(404).json({ error: "No components found" })
+    try {
+      const result = await Component.getAll();
+      res.status(200).send(result);
+    } catch (err) {
+      res.status(500).send(err.message);
     }
-
-    res.status(200).json(components);
   },
   getById: async (req, res, next) => {
     try {
@@ -28,75 +24,49 @@ const ComponentController = {
     }
   },
   update: async (req, res) => {
-    const compId = req.params.id;
-    const componentData = req.body;
-
     try {
-      const keysToUpdate = Object.keys(componentData);
-      const validKeysFound = keysToUpdate.filter(key => validComponentKeys.includes(key))
+      const keysToUpdate = Object.keys(req.body);
+      const validKeysFound = keysToUpdate.filter(key => Component.validComponentKeys.includes(key))
 
       if (validKeysFound.length === 0) {
-        return res.status(400).json({ error: "No valid keys to update component" })
+        return res.status(400).send("No valid keys to update component")
       }
 
-      const updatedComp = await ComponentModel.findByIdAndUpdate(compId, componentData, { new: true, runValidators: true });
+      const result = await Component.update(req.params.id, req.body);
 
-      if (!updatedComp) {
-        return res.status(404).json({ error: "Component not found" })
-      }
-
-      res.status(200).json(updatedComp);
+      res.status(200).send(result);
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).send(err.message);
     }
   },
   create: async (req, res) => {
     if (!req.body) {
-      res.status(422).json({ error: "Request must have a body" });
-      return;
+      return res.status(422).send("Request must have a body");
     }
 
     try {
-      const compObj = new Component(req.body);
-
-      const error = compObj.validateObject();
-      if (error) {
-        res.status(422).json({ error: error });
-        return;
-      }
-
-      const newComponent = new ComponentModel(compObj);
-      const savedComponent = await newComponent.save();
-      res.status(201).json(savedComponent);
+      const result = await Component.create(req.body);
+      res.status(201).send(result);
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).send(err.message);
     }
   },
   batchCreate: async (req, res) => {
-    const path = "./templates/components.json";
-    const components = JSON.parse(fs.readFileSync(path));
-
     try {
-      const result = await ComponentModel.insertMany(components, { ordered: false })
-      res.status(201).json({ result: result });
+      const result = await Component.batchCreate();
+      res.status(201).send(result);
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      res.status(500).send(err.message);
     }
   },
   delete: async (req, res) => {
-    const compId = req.params.id;
-
     try {
-      const deletedComp = await ComponentModel.findByIdAndDelete(compId);
-
-      if (!deletedComp) {
-        return res.status(404).json({ error: "Component not found" });
-      }
-
-      res.status(200).json({ message: "Component successfully deleted" });
+      const result = await Component.delete(req.params.id)
+      res.status(200).send("Component successfully deleted\n\n" + result);
     } catch (err) {
-      res.status(500).json({ error: err.message })
+      res.status(500).send(err.message)
     }
   }
 };
+
 export default ComponentController;

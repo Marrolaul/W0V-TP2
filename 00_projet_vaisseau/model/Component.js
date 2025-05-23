@@ -1,4 +1,15 @@
 import ComponentModel from "./ComponentModel.js";
+import fs from 'fs';
+
+const validComponentStats = {
+  engine: "speed",
+  hull: "hp",
+  thruster: "acceleration",
+  shield: "shield",
+  weapon: "damage",
+  radar: "detection",
+  navigation: "manoeuvrability"
+}
 
 class Component {
   id;
@@ -29,6 +40,7 @@ class Component {
     if (!this.isValidNumber(this.value)) {return "Value is invalid or missing"}
     if (!this.isValidNumber(this.amount)) {return "Amount is invalid or missing"}
     if (!this.isValidBool(this.isEquiped)) {return "isEquiped is invalid or missing"}
+    return null;
   }
 
   isValidModel() {
@@ -52,26 +64,19 @@ class Component {
   }
 
   isWorking() {
-    return this.amount && this.isEquiped;
-  }
-
-  /**
-   * @param {*} source could be a weapon or an asteroid or something else that has a damage value
-   */
-  takeDamage(source) {
-    // TODO : you have to decide how the damage calculation works
+    return this.amount > 0 && this.isEquiped;
   }
 
   /**
    * @param {*} source could be a weapon or an asteroid or something else that has a damage value
    */
   use(source) {
-    // TODO : you have to decide how the damage calculation works
+    this.amount -= source;
+
+    if (this.amount < 0) {
+      this.amount = 0;
+    }
   }
-
-  save(callback) {}
-
-  remove(callback) {}
 
   toJSON() {
     return {
@@ -90,27 +95,72 @@ class Component {
     return JSON.stringify(this.toJSON());
   }
 
-  static async getById(compId) {
-    return new Promise((res, rej) => {
-      ComponentModel.findById(compId).then((comp) => {
-        return res(new Component(comp));
-      }).catch((err) => {
-        return rej(err);
-      });
-    })
+  static async getAll() {
+    let data = await ComponentModel.find();
+    if (!data || data.length === 0) {
+      throw new Error("No components found");
+    }
+    return data.map(comp => new Component(comp))
   }
-}
 
-export const validComponentStats = {
-  engine: "speed",
-  hull: "hp",
-  thruster: "acceleration",
-  shield: "shield",
-  weapon: "damage",
-  radar: "detection",
-  navigation: "manoeuvrability"
-}
+  static async getById(id) {
+    let component = await ComponentModel.findById(id);
+    if (!component || component === null) {
+      throw new Error("Component not found");
+    }
+    return new Component(component);
+  }
 
-export const validComponentKeys = ['model', 'type', 'health', 'targetStat', 'value', 'amount', 'isEquiped']
+  static async update(id, newData) {
+    const updatedComp = await ComponentModel.findByIdAndUpdate(id, newData, { new: true, runValidators: true });
+    if (!updatedComp) {
+      throw new Error("Component not found");
+    }
+    return new Component(updatedComp);
+  }
+
+  static async create(data) {
+    const newComponent = new Component(data);
+    const error = newComponent.validateObject();
+    if (error) {
+      throw new Error(error)
+    }
+    const newComponentModel = new ComponentModel(newComponent);
+    const savedComponent = await newComponentModel.save();
+    return savedComponent;
+  }
+
+  static async batchCreate() {
+    const path = "./templates/components.json";
+    const data = JSON.parse(fs.readFileSync(path));
+
+    if (!data || data.length === 0) {
+      throw new Error("Data file not found")
+    }
+
+    const components = data.map(comp => new Component(comp));
+
+    let error = null;
+
+    components.forEach(c => {
+      error = c.validateObject();
+      if (error) {
+        throw new Error(error)
+      }
+    })
+    const result = await ComponentModel.insertMany(components);
+    return result;
+  }
+
+  static async delete(id) {
+    const deletedComp = await ComponentModel.findByIdAndDelete(id);
+    if (!deletedComp) {
+      throw new Error("Component not found")
+    }
+    return deletedComp;
+  }
+
+  static validComponentKeys = ['model', 'type', 'health', 'targetStat', 'value', 'amount', 'isEquiped'];
+}
 
 export default Component;
