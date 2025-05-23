@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { Error, Types } from "mongoose";
 import Ship from "../model/Ship.js";
 import {promises as fs} from 'fs';
 import Component from "../model/Component.js";
@@ -6,23 +6,21 @@ import Component from "../model/Component.js";
 const batchShips = "./templates/ships.json";
 
 const ShipController = {
-  getAll: (_, res) => {
+  getAll: (_, res, next) => {
     Ship.getAllShips().then((result) => {
       res.status(200).send(result);
     }).catch((err) => {
-      console.log(err);
-      res.status(500).send("Internal error");
+      next(err);
     });
   },
-  getById: (req, res) => {
+  getById: (req, res, next) => {
     Ship.getById(req.params.shipId).then((result) => {
       res.status(200).send(result);
     }).catch((err) => {
-      console.log(err);
-      res.status(404).send("Ship not found in the database");
+      next(err);
     });
   },
-  getAllInfoById: (req, res) => {
+  getAllInfoById: (req, res, next) => {
     Ship.getById(req.params.shipId).then((shipFound) => {
       let fullInfoShip = shipFound.toJSON();
       const infoComponents = [];
@@ -33,8 +31,7 @@ const ShipController = {
             .then((componentToDisplay) => {
               fullInfoShip.componentSlots[type] = componentToDisplay.toJSON();
             }).catch((err) => {
-              console.log(err);
-              return err;
+              next(err);
             })
           );          
         }
@@ -42,54 +39,41 @@ const ShipController = {
 
       Promise.all(infoComponents).then(() => {
         res.status(200).send(fullInfoShip);
-      }).catch((err) => {
-        console.log(err);
-        res.status(500).send("Internal error");
+      }).catch(() => {
+        next("internal_error");
       });
       
     }).catch((err) => {
-      console.log(err);
-      res.status(404).send("Ship not found in the database");
+      next(err);
     });
   },
-  create: (req, res) => {
+  create: (req, res, next) => {
     if (!req.body) {
-      res.status(400).send("Invalid request");
+      next("bad_request");
     } else {
       let newShip = new Ship(req.body);
       newShip.save().then((result) => {
         res.status(200).send(result);
       }).catch((err) => {
-        console.log(err);
-        if(err == "invalid_ship")
-        {
-          res.status(400).send("Cannot add this ship to the database");
-          return;
-        }
-        res.status(500).send(err);
+        next(err);
       });
     }
   },
-  update: (req,res) => {
+  update: (req,res, next) => {
     if(!req.body) {
-      res.status(400).send("Invalid request");
-      return;
+      next("bad_request");
     }
     Ship.getById(req.params.shipId).then((shipFound) => {
       shipFound.update(req.body, req.params.shipId).then((shipUpdated) => {
         res.status(200).send(shipUpdated);
       }).catch((err) => {
-        console.log(err)
-        res.status(406).send("Ship has not been updated in the database");
-        return;
+        next(err);
       });
     }).catch((err) => {
-      console.log(err);
-      res.status(404).send("Ship not found in database");
-      return;
+      next(err);
     });
   },
-  batchCreate: (_, res) => {
+  batchCreate: (_, res, next) => {
     fs.readFile(batchShips).then((data) => {
       let shipsList = JSON.parse(data);
       const savedShip = [];
@@ -103,49 +87,40 @@ const ShipController = {
         Ship.getAllShips().then((result) => {
           res.status(200).send(result);
         }).catch((err) => {
-          console.log(err);
-          res.status(500).send("Internal error");
+          next(err);
         });
       }).catch((err) => {
-        console.log(err);
-        res.status(500).send("Internal error");
+        next(err);
       });
     }).catch((err) => {
-      console.log(err);
-      res.status(500).send("Internal error");
-    });
-    
+      next(err);
+    });    
   },
-  remove: (req, res) => {
+  remove: (req, res, next) => {
     Ship.getById(req.params.shipId).then((shipFound) => {
       shipFound.delete().then((result) => {
         res.status(204).send(result);
       }).catch((err) => {
-        console.log(err);
-        res.status(500).send("Internal server error");
+        next(err);
       });
     }).catch((err) => {
-      console.log(err);
-      res.status(404).send("Ship not found in the database");
+      next(err);
     });
   },
-  equipComponent: (req, res) => {
+  equipComponent: (req, res, next) => {
     Ship.getById(req.params.shipId).then((shipFound) => {
       Component.getById(req.body.id).then((newComponent) => {
         shipFound.installComponent(newComponent);
         shipFound.update().then((result) => {
           res.status(202).send(result);
         }).catch((err) => {
-          console.log(err);
-          res.status(500).send("Internal server error");
+          next(err);
         });
       }).catch((err) => {
-        console.log(err);
-        res.status(404).send("Component not found in the database");
+        next(err);
       })
     }).catch((err) => {
-      console.log(err);
-      res.status(404).send("Ship not found in the database");
+      next(err);
     })
   }
 };

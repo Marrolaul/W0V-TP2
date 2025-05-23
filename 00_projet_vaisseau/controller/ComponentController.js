@@ -14,17 +14,17 @@ const ComponentController = {
 
     res.status(200).json(components);
   },
-  getById: async (req, res) => {
+  getById: async (req, res, next) => {
     try {
       const component = await Component.getById(req.params.id);
 
       if (!component) {
-        return res.status(404).json({ error: "Component not found" })
+        next("component_not_found")
       }
 
       res.status(200).json(component);
     } catch (err) {
-      res.status(500).json({ error: err.message });
+      next(err);
     }
   },
   update: async (req, res) => {

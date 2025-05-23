@@ -128,13 +128,13 @@ class Ship {
   save() {
     return new Promise((res, rej) => {
       if(!this.isValidShip()) {
-        return rej("invalid_ship");
+        return rej("bad_request");
       }
       let parsedShip = {...this};
       ShipModel.create(parsedShip).then((jsonData) => {
           return res(new Ship(jsonData));
-        }).catch((err) => {
-          return rej(err);
+        }).catch(() => {
+          return rej("internal_error");
         });
     });
   }
@@ -144,12 +144,12 @@ class Ship {
       let filter = {_id: shipId};
       let updatedShip = new Ship({...this, ...requestBody});
       if (!updatedShip.isValidShip()) {
-        return rej("invalid_ship");
+        return rej("bad_request");
       }
       ShipModel.findByIdAndUpdate(filter, updatedShip, {new: true}).then((newShip) => {
         return res(new Ship(newShip));
-      }).catch ((err) => {
-        return rej(err);
+      }).catch (() => {
+        return rej("internal_error");
       });
     });
   }
@@ -158,8 +158,8 @@ class Ship {
     return new Promise((res, rej) => {
       ShipModel.deleteOne({_id: this.id}).then(() => {
         return res(`${this.name} has been deleted.`);
-      }).catch((err) => {
-        return rej(err);
+      }).catch(() => {
+        return rej("internal_error");
       });
     });
   }
@@ -222,8 +222,8 @@ class Ship {
     return new Promise((res, rej) => {
       ShipModel.findById(shipId).then((ship) => {
         return res(new Ship(ship));
-      }).catch((err) => {
-        return rej(err);
+      }).catch(() => {
+        return rej("ship_not_found");
       });
     });
   }
@@ -237,8 +237,8 @@ class Ship {
           listShips.push(shipToAdd);
         });
         return res(listShips);
-      }).catch((err) => {
-        return rej(err);
+      }).catch(() => {
+        return rej("internal_error");
       })
     })
   }
