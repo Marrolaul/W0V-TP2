@@ -64,7 +64,7 @@ class Component {
   }
 
   isWorking() {
-    return this.amount && this.isEquiped;
+    return this.amount > 0;
   }
 
   install() {
@@ -93,6 +93,7 @@ class Component {
     if (this.amount < 0) {
       this.amount = 0;
     }
+    Component.update(this.id, this);
   }
 
   toJSON() {

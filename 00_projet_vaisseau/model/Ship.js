@@ -121,12 +121,49 @@ class Ship {
   }
 
   move() {
-    if (
-      !this.componentSlots?.engine?.isWorking() ||
-      !this.componentSlots?.thruster?.isWorking()
-    ) {
-      // TODO : the ship cant move if it doesnt have a working engine
-    }
+    return new Promise((res, rej) => {      
+      let distanceMoved = 0;
+      let speed = 0;
+      let acceleration = 0;
+      let time = 3;
+  
+      let enginePromise = null;
+      let thrusterPromise = null;
+  
+      const componentsPromises = [];
+  
+      if(this.componentSlots.engine != null) {
+        componentsPromises.push(enginePromise = Component.getById(this.componentSlots.engine).catch(() => {
+          return rej("component_not_found");
+        }));
+      }
+      if(this.componentSlots.thruster != null) {
+        componentsPromises.push(thrusterPromise = Component.getById(this.componentSlots.thruster).catch(() => {
+          return rej("component_not_found");
+        }));
+      }
+  
+      Promise.all(componentsPromises).then((ComponentUse) => {
+        ComponentUse.forEach((component) => {
+          if(component.isWorking()) {
+            if(component.type == "engine") {
+              speed = this.stats.speed;
+            } else {
+              acceleration = this.stats.acceleration;
+            }
+          }
+        });
+
+        distanceMoved = speed + ((1/2)*(acceleration * acceleration) * (time * time));
+
+        if (distanceMoved == 0) {
+          return res("The ship cannot move!");
+        }
+        return res(`The ship moved ${distanceMoved} meters!`);
+      }).catch((err) => {
+        return rej(err);
+      });
+    });
   }
 
   /**
