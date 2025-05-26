@@ -48,6 +48,17 @@ const ShipController = {
       next(err);
     });
   },
+  move: (req,res,next) => {
+    Ship.getById(req.params.shipId).then((ship) => {
+      ship.move().then((result) => {
+        res.status(200).send(result);
+      }).catch ((err) => {
+        next(err);
+      });
+    }).catch((err) => {
+      next(err);
+    });
+  },
   create: (req, res, next) => {
     if (!req.body) {
       next("bad_request");
