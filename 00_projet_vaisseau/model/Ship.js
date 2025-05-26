@@ -166,6 +166,16 @@ class Ship {
     });
   }
 
+  detectOtherShips(shipLists) {
+    const detectedShips = [];
+    shipLists.forEach((ship) => {
+      if(ship.id != this.id && ship.stats.stealth < this.stats.detection) {
+        detectedShips.push(ship);
+      }
+    });
+    return detectedShips;
+  }
+
   /**
    * @param {*} target could be a ship or an asteroid or something else that has a health value
    */

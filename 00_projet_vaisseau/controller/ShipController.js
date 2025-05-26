@@ -3,6 +3,7 @@ import Ship from "../model/Ship.js";
 import {promises as fs} from 'fs';
 import Component from "../model/Component.js";
 import { get } from "http";
+import { arrayBuffer } from "stream/consumers";
 
 const batchShips = "./templates/ships.json";
 
@@ -55,6 +56,23 @@ const ShipController = {
       }).catch ((err) => {
         next(err);
       });
+    }).catch((err) => {
+      next(err);
+    });
+  },
+  detectShips: (req,res,next) => {
+    const detectionPromise = [];
+    detectionPromise.push(Ship.getAllShips());
+    detectionPromise.push(Ship.getById(req.params.shipId));
+    
+    Promise.all(detectionPromise).then((data) => {
+      let shipSearching = data[1];
+      const detectedShips = shipSearching.detectOtherShips(data[0]);
+      if (detectedShips.length == 0) {
+        res.status(200).send("No other ship detected");
+      } else {
+        res.status(200).send(detectedShips);
+      }
     }).catch((err) => {
       next(err);
     });

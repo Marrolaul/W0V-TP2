@@ -7,6 +7,7 @@ ShipRouter.get("/", ShipController.getAll);
 ShipRouter.get("/:shipId", ShipController.getById);
 ShipRouter.get("/completeInfo/:shipId", ShipController.getAllInfoById);
 ShipRouter.get("/move/:shipId", ShipController.move);
+ShipRouter.get("/radar/:shipId", ShipController.detectShips);
 
 ShipRouter.post("/batch",ShipController.batchCreate);
 ShipRouter.post("/create", ShipController.create);
