@@ -8,7 +8,7 @@ const validComponentStats = {
   shield: "shield",
   weapon: "damage",
   radar: "detection",
-  navigation: "manoeuvrability"
+  navigation: "maneuverability"
 }
 
 class Component {
@@ -127,6 +127,21 @@ class Component {
     }
     return new Component(component);
   }
+
+  /*static async getComponentByType(neededType) {
+      let foundComponent = await ComponentModel.findOne({type: neededType});
+      if(foundComponent == null){
+        throw new Error("component_not_found");
+      }      
+      let componentDoc = await ComponentModel.findById(foundComponent.id);
+      let componentObject = componentDoc.toObject();
+      delete componentObject._id;
+      
+      let componentCopy = new ComponentModel(componentObject);
+      let newComponent = await componentCopy.save();
+
+      return new Component(newComponent);
+  }*/
 
   static async update(id, newData) {
     const updatedComp = await ComponentModel.findByIdAndUpdate(id, newData, { new: true, runValidators: true });

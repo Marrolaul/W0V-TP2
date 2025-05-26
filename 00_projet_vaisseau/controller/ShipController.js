@@ -97,6 +97,36 @@ const ShipController = {
       next(err);
     });    
   },
+  /*batchEquip: (_, res, next) => {
+    const componentPromises = [];
+    Ship.getAllShips().then((shipsList) => {
+      shipsList.forEach(async (ship) => {
+        for(const [type, value] of Object.entries(ship.componentSlots)) {
+          if (value == null) {
+            let component;
+            try {
+              component = await Component.getComponentByType(type);
+            } catch (err) {
+              throw err;
+            }
+            componentPromises.push(ship.installComponent(component).catch((err) => {
+              throw err;
+            }));                    
+          }
+        }
+      });
+
+      Promise.all(componentPromises).then(() => {
+        Ship.getAllShips().then((results) => {
+          res.status(200).send(results);
+        }).catch((err) => {
+          next(err);
+        })
+      })
+    }).catch((err) => {
+      next(err);
+    });
+  },*/
   remove: (req, res, next) => {
     Ship.getById(req.params.shipId).then((shipFound) => {
       shipFound.delete().then((result) => {

@@ -111,7 +111,7 @@
         "model": "Basic Navigation",
         "type": "navigation",
         "health": 100,
-        "targetStat": "manoeuvrability",
+        "targetStat": "maneuverability",
         "value": 50,
         "amount": 1,
         "isEquiped": false
@@ -120,7 +120,7 @@
         "model": "Advanced Navigation",
         "type": "navigation",
         "health": 200,
-        "targetStat": "manoeuvrability",
+        "targetStat": "maneuverability",
         "value": 80,
         "amount": 1,
         "isEquiped": false
