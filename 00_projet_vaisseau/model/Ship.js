@@ -1,4 +1,3 @@
-import { json } from "express";
 import ShipModel from "./ShipModel.js";
 import Component from "./Component.js";
 
@@ -97,9 +96,9 @@ class Ship {
         this.stats[componentToInstall.targetStat] += componentToInstall.value;
       }
       this.update().then((updatedShip) => {
-          return res(updatedShip);
-        }).catch((err) => {
-          return rej(err);
+        return res(updatedShip);
+      }).catch((err) => {
+        return rej(err);
       });
     })
   }
@@ -110,42 +109,130 @@ class Ship {
         return res(this);
       }
       Component.getById(this.componentSlots[componentType]).then((componentToRemove) => {
-          this.stats[componentToRemove.targetStat] -= componentToRemove.value;
-          this.componentSlots[componentType] = null;
-          componentToRemove.uninstall();
-          return res(this);
-        }).catch((err) => {
-          return rej(err);
+        this.stats[componentToRemove.targetStat] -= componentToRemove.value;
+        this.componentSlots[componentType] = null;
+        componentToRemove.uninstall();
+        return res(this);
+      }).catch(() => {
+        return rej("component_to_remove_not_found");
       });
     });
   }
 
   move() {
-    if (
-      !this.componentSlots?.engine?.isWorking() ||
-      !this.componentSlots?.thruster?.isWorking()
-    ) {
-      // TODO : the ship cant move if it doesnt have a working engine
-    }
+    return new Promise((res, rej) => {      
+      let distanceMoved = 0;
+      let speed = 0;
+      let acceleration = 0;
+      let time = 3;
+      
+      let enginePromise = null;
+      let thrusterPromise = null;
+
+      const componentsPromises = [];
+  
+      if(this.componentSlots.engine != null) {
+        componentsPromises.push(enginePromise = Component.getById(this.componentSlots.engine).catch((err) => {
+          return rej(err);
+        }));
+      }
+      if(this.componentSlots.thruster != null) {
+        componentsPromises.push(thrusterPromise = Component.getById(this.componentSlots.thruster).catch((err) => {
+          return rej(err);
+        }));
+      }
+  
+      Promise.all(componentsPromises).then((ComponentUse) => {
+        ComponentUse.forEach((component) => {
+          if(component.isWorking()) {
+            if(component.type == "engine") {
+              speed = this.stats.speed;
+            } else {
+              acceleration = this.stats.acceleration;
+            }
+            component.use(5);
+          }
+        });
+
+        distanceMoved = speed + ((1/2)*(acceleration * acceleration) * (time * time));
+
+        if (distanceMoved == 0) {
+          return res("The ship cannot move!");
+        }
+        return res(`The ship moved ${distanceMoved} meters!`);
+      }).catch((err) => {
+        return rej(err);
+      });
+    });
+  }
+
+  detectOtherShips(shipLists) {
+    const detectedShips = [];
+    shipLists.forEach((ship) => {
+      if(ship.id != this.id && ship.stats.stealth < this.stats.detection) {
+        detectedShips.push(ship);
+      }
+    });
+    return detectedShips;
   }
 
   /**
-   * @param {*} target could be a ship or an asteroid or something else that has a health value
+   * @param {*} defender
    */
-  attack(target) {
-    if (
-      !this.componentSlots?.weapon?.isWorking() ||
-      !this.componentSlots?.weapon?.hasAmmo()
-    ) {
-      // TODO : the ship cant attack if it doesnt have a working weapon or ammo
+  async attack(defender) {
+    const result = {
+      success: false,
+      message: "",
+      damage: null,
+      defender: null
     }
+
+    const weapon = this.componentSlots.weapon ? await Component.getById(this.componentSlots.weapon) : null;
+
+    if (weapon === null) {
+      throw new Error("no_weapon")
+    }
+    
+    if (!weapon?.isWorking()) {
+      throw new Error("no_ammo")
+    }
+
+    let damage = Number(weapon.value);
+
+    const defense = (defender?.stats?.shield || 0)+ (defender?.stats?.navigation || 0);
+
+    damage -= defense;
+    result.damage = damage;
+
+    if (damage > 0) {
+      defender.takeDamage(damage);
+      result.success = true;
+      result.message = `${this.name} has hit ${defender.name} for ${damage} damage.`;
+    }
+    
+    weapon.use(1);
+    await Component.update(weapon.id, weapon);
+
+    result.defender = {
+      name: defender.name,
+      remainingHealth: defender.stats.health > 0 ? defender.stats.health : 0
+    }
+
+    if (defender.stats.health <= 0) {
+      result.message += ` ${defender.name} is dead`;
+      defender.delete();
+    } else {
+      defender.update();
+    }
+    
+    return result;
   }
 
   /**
-   * @param {*} source could be a weapon or an asteroid or something else that has a damage value
+   * @param {*} damage
    */
-  takeDamage(source) {
-    // TODO : you have to decide how the damage calculation works
+  async takeDamage(damage) {
+    this.stats.health -= damage;
   }
 
   save() {
@@ -180,6 +267,12 @@ class Ship {
   delete() {
     return new Promise((res, rej) => {
       ShipModel.deleteOne({_id: this.id}).then(() => {
+        Object.values(this.componentSlots).forEach(id => {
+          if (id !== null) {
+            Component.delete(id);
+          }
+        })
+      }).then(() => {
         return res(`${this.name} has been deleted.`);
       }).catch(() => {
         return rej("internal_error");

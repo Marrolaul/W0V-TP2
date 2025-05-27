@@ -21,8 +21,8 @@
         "model": "Basic Hull",
         "type": "hull",
         "health": 100,
-        "targetStat": "hp",
-        "value": 50,
+        "targetStat": "health",
+        "value": 30,
         "amount": 1,
         "isEquiped": false
     },
@@ -30,8 +30,8 @@
         "model": "Thick Hull",
         "type": "hull",
         "health": 200,
-        "targetStat": "hp",
-        "value": 80,
+        "targetStat": "health",
+        "value": 50,
         "amount": 1,
         "isEquiped": false
     },
@@ -40,7 +40,7 @@
         "type": "thruster",
         "health": 100,
         "targetStat": "acceleration",
-        "value": 50,
+        "value": 5,
         "amount": 300,
         "isEquiped": false
     },
@@ -49,7 +49,7 @@
         "type": "thruster",
         "health": 200,
         "targetStat": "acceleration",
-        "value": 80,
+        "value": 8,
         "amount": 300,
         "isEquiped": false
     },
@@ -58,7 +58,7 @@
         "type": "shield",
         "health": 100,
         "targetStat": "shield",
-        "value": 50,
+        "value": 30,
         "amount": 1,
         "isEquiped": false
     },
@@ -67,7 +67,7 @@
         "type": "shield",
         "health": 200,
         "targetStat": "shield",
-        "value": 80,
+        "value": 40,
         "amount": 1,
         "isEquiped": false
     },
@@ -112,7 +112,7 @@
         "type": "navigation",
         "health": 100,
         "targetStat": "maneuverability",
-        "value": 50,
+        "value": 10,
         "amount": 1,
         "isEquiped": false
     },
@@ -121,7 +121,7 @@
         "type": "navigation",
         "health": 200,
         "targetStat": "maneuverability",
-        "value": 80,
+        "value": 30,
         "amount": 1,
         "isEquiped": false
     }

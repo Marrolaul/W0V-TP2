@@ -3,6 +3,7 @@ import Ship from "../model/Ship.js";
 import {promises as fs} from 'fs';
 import Component from "../model/Component.js";
 import { get } from "http";
+import { arrayBuffer } from "stream/consumers";
 
 const batchShips = "./templates/ships.json";
 
@@ -44,6 +45,34 @@ const ShipController = {
         next("internal_error");
       });
       
+    }).catch((err) => {
+      next(err);
+    });
+  },
+  move: (req,res,next) => {
+    Ship.getById(req.params.shipId).then((ship) => {
+      ship.move().then((result) => {
+        res.status(200).send(result);
+      }).catch ((err) => {
+        next(err);
+      });
+    }).catch((err) => {
+      next(err);
+    });
+  },
+  detectShips: (req,res,next) => {
+    const detectionPromise = [];
+    detectionPromise.push(Ship.getAllShips());
+    detectionPromise.push(Ship.getById(req.params.shipId));
+    
+    Promise.all(detectionPromise).then((data) => {
+      let shipSearching = data[1];
+      const detectedShips = shipSearching.detectOtherShips(data[0]);
+      if (detectedShips.length == 0) {
+        res.status(200).send("No other ship detected");
+      } else {
+        res.status(200).send(detectedShips);
+      }
     }).catch((err) => {
       next(err);
     });
@@ -156,6 +185,25 @@ const ShipController = {
     }).catch((err) => {
       next(err);
     });
+  },
+  attack: async (req, res, next) => {
+    try {
+      const { attackerId, defenderId } = req.body;
+
+      const [ attacker, defender ] = await Promise.all([
+        Ship.getById(attackerId),
+        Ship.getById(defenderId)
+      ]);
+
+      if (!attacker || !defender) {
+        next("bad_request")
+      }
+
+      const result = await attacker.attack(defender);
+      res.status(200).send(result);
+    } catch (err) {
+      next(err.message);
+    }
   }
 };
 export default ShipController;

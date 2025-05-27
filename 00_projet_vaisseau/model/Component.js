@@ -2,13 +2,13 @@ import ComponentModel from "./ComponentModel.js";
 import fs from 'fs';
 
 const validComponentStats = {
-  engine: "speed",
-  hull: "hp",
-  thruster: "acceleration",
-  shield: "shield",
-  weapon: "damage",
-  radar: "detection",
-  navigation: "maneuverability"
+  engine: ["speed"],
+  hull: ["health", "stealth"],
+  thruster: ["acceleration"],
+  shield: ["shield"],
+  weapon: ["damage"],
+  radar: ["detection"],
+  navigation: ["maneuverability"]
 }
 
 class Component {
@@ -56,7 +56,7 @@ class Component {
   }
 
   isValidTargetStat() {
-    return validComponentStats[this.type] === this.targetStat;
+    return validComponentStats[this.type].includes(this.targetStat);
   }
 
   isValidBool(value) {
@@ -64,7 +64,7 @@ class Component {
   }
 
   isWorking() {
-    return this.amount && this.isEquiped;
+    return this.amount > 0;
   }
 
   install() {
@@ -93,6 +93,7 @@ class Component {
     if (this.amount < 0) {
       this.amount = 0;
     }
+    Component.update(this.id, this);
   }
 
   toJSON() {
@@ -141,9 +142,9 @@ class Component {
       let newComponent = await componentCopy.save();
 
       return new Component(newComponent);
-  }*/
+  }*/ 
 
-  static async update(id, newData) {
+  static async update(id = this.id, newData = this) {
     const updatedComp = await ComponentModel.findByIdAndUpdate(id, newData, { new: true, runValidators: true });
     if (!updatedComp) {
       throw new Error("component_not_found");

@@ -6,21 +6,17 @@ const ShipRouter = express.Router();
 ShipRouter.get("/", ShipController.getAll);
 ShipRouter.get("/:shipId", ShipController.getById);
 ShipRouter.get("/completeInfo/:shipId", ShipController.getAllInfoById);
+ShipRouter.get("/move/:shipId", ShipController.move);
+ShipRouter.get("/radar/:shipId", ShipController.detectShips);
 
 ShipRouter.post("/batch",ShipController.batchCreate);
 ShipRouter.post("/create", ShipController.create);
+ShipRouter.post("/attack", ShipController.attack);
 
 ShipRouter.put("/update/:shipId", ShipController.update);
 ShipRouter.put("/equipComponent/:shipId", ShipController.equipComponent);
 //ShipRouter.put("/batch/equipShips", ShipController.batchEquip);
 
 ShipRouter.delete("/delete/:shipId", ShipController.remove);
-
-// TODO : you have to implements the routes to use the ships
-ShipRouter.post("/:shipId/attack", () => {
-  // TODO: req.body should somewhat look like : { defenderShipId: ID}
-  // the response could be something like { ammoCount: Number, defenderShip: Ship}
-  // or { currentShip: Ship, defenderShip: Ship}
-});
 
 export default ShipRouter;

@@ -25,10 +25,30 @@ const traductionError = {
     en : "Error(s) in the request",
     fr : "Erreure(s) dans la requête"
   },
+  no_weapon : {
+    statusCode : 400,
+    en : "Ship doesn't have a weapon",
+    fr : "Le vaisseau n'a pas d'arme"
+  },
+  no_ammo : {
+    statusCode : 400,
+    en : "Weapon doesn't have ammo",
+    fr : "L'arme n'a pas de munition"
+  },
   already_installed : {
     statusCode : 202,
     en : "The requested component is already installed on another ship",
-    fr : "La pièce demandée est dans un autre vaisseau"
+    fr : "La pièce demandée est installée sur un autre vaisseau"
+  },
+  component_to_remove_not_found : {
+    statusCode : 404,
+    en : "The component to remove on the ship is not in the database",
+    fr : "Le composant à enlever du vaisseau non présent dans la base de données"
+  },
+  update_failed : {
+    statusCode : 500,
+    en : "Error while updating the ship values",
+    fr : "Erreur en mettant à jour les valeurs du vaisseau"
   }
 }
 
@@ -37,7 +57,7 @@ app.use(express.json());
 // MichUri = "mongodb+srv://ptrol:8FGNmQmeusALIBVr@cluster0.l5cl5il.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 // WilliamUri = "mongodb+srv://dev:dev@cluster0.ylc53cj.mongodb.net/character_app?retryWrites=true&w=majority&appName=Cluster0";
 
-const uri = "mongodb+srv://ptrol:8FGNmQmeusALIBVr@cluster0.l5cl5il.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "mongodb+srv://dev:dev@cluster0.ylc53cj.mongodb.net/tp2?retryWrites=true&w=majority&appName=Cluster0";
 const clientOptions = {
   serverApi: { version: "1", strict: true, deprecationErrors: true },
 };
