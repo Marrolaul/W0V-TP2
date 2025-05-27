@@ -59,10 +59,6 @@ class Component {
     return validComponentStats[this.type].includes(this.targetStat);
   }
 
-  isValidTargetStatBackup() {
-    return validComponentStats[this.type] === this.targetStat;
-  }
-
   isValidBool(value) {
     return typeof value === 'boolean';
   }
