@@ -1,4 +1,3 @@
-import { json } from "express";
 import ShipModel from "./ShipModel.js";
 import Component from "./Component.js";
 
@@ -97,9 +96,9 @@ class Ship {
         this.stats[componentToInstall.targetStat] += componentToInstall.value;
       }
       this.update().then((updatedShip) => {
-          return res(updatedShip);
-        }).catch((err) => {
-          return rej(err);
+        return res(updatedShip);
+      }).catch((err) => {
+        return rej(err);
       });
     })
   }
@@ -110,12 +109,12 @@ class Ship {
         return res(this);
       }
       Component.getById(this.componentSlots[componentType]).then((componentToRemove) => {
-          this.stats[componentToRemove.targetStat] -= componentToRemove.value;
-          this.componentSlots[componentType] = null;
-          componentToRemove.uninstall();
-          return res(this);
-        }).catch((err) => {
-          return rej(err);
+        this.stats[componentToRemove.targetStat] -= componentToRemove.value;
+        this.componentSlots[componentType] = null;
+        componentToRemove.uninstall();
+        return res(this);
+      }).catch(() => {
+        return rej("component_to_remove_not_found");
       });
     });
   }
@@ -126,20 +125,20 @@ class Ship {
       let speed = 0;
       let acceleration = 0;
       let time = 3;
-  
+      
       let enginePromise = null;
       let thrusterPromise = null;
-  
+
       const componentsPromises = [];
   
       if(this.componentSlots.engine != null) {
-        componentsPromises.push(enginePromise = Component.getById(this.componentSlots.engine).catch(() => {
-          return rej("component_not_found");
+        componentsPromises.push(enginePromise = Component.getById(this.componentSlots.engine).catch((err) => {
+          return rej(err);
         }));
       }
       if(this.componentSlots.thruster != null) {
-        componentsPromises.push(thrusterPromise = Component.getById(this.componentSlots.thruster).catch(() => {
-          return rej("component_not_found");
+        componentsPromises.push(thrusterPromise = Component.getById(this.componentSlots.thruster).catch((err) => {
+          return rej(err);
         }));
       }
   
@@ -151,6 +150,7 @@ class Ship {
             } else {
               acceleration = this.stats.acceleration;
             }
+            component.use(5);
           }
         });
 
@@ -250,7 +250,7 @@ class Ship {
   /**
    * @param {*} damage
    */
-  async takeDamage(damage, shield) {
+  async takeDamage(damage) {
     this.stats.health -= damage;
   }
 

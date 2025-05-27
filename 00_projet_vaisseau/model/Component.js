@@ -3,7 +3,7 @@ import fs from 'fs';
 
 const validComponentStats = {
   engine: "speed",
-  hull: "hp",
+  hull: "health",
   thruster: "acceleration",
   shield: "shield",
   weapon: "damage",
