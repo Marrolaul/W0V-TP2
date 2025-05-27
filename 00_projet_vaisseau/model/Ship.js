@@ -177,22 +177,81 @@ class Ship {
   }
 
   /**
-   * @param {*} target could be a ship or an asteroid or something else that has a health value
+   * @param {*} defender could be a ship or an asteroid or something else that has a health value
    */
-  attack(target) {
-    if (
-      !this.componentSlots?.weapon?.isWorking() ||
-      !this.componentSlots?.weapon?.hasAmmo()
-    ) {
-      // TODO : the ship cant attack if it doesnt have a working weapon or ammo
+  async attack(defender) {
+    const result = {
+      success: false,
+      message: "",
+      attacker: null,
+      defender: null
     }
+
+    const weapon = this.componentSlots.weapon ? await Component.getById(this.componentSlots.weapon) : null;
+
+    if (weapon === null) {
+      throw new Error("no_weapon")
+    }
+    
+    if (!weapon?.isWorking()) {
+      throw new Error("no_ammo")
+    }
+
+    let damage = Number(weapon.value);
+
+    const shieldId = defender.componentSlots.shield;
+    const shieldObj = shieldId ? await Component.getById(shieldId) : null;
+    const shield = shieldObj?.value || 0;
+
+    const hullId = defender.componentSlots.hull;
+    const hullObj = hullId ? await Component.getById(hullId) : null;
+    const hull = hullObj?.value || 0;
+
+    const navigationId = defender.componentSlots.navigation;
+    const navigationObj = navigationId ? await Component.getById(navigationId) : null;
+    const navigation = navigationObj?.value || 0;
+
+    const defense = shield + hull + navigation;
+
+    damage -= defense;
+
+    if (damage > 0) {
+      defender.takeDamage(damage);
+      result.success = true;
+      result.message = `${this.name} has hit ${defender.name} for ${damage} damage.`;
+    }
+    
+    weapon.use(1);
+    await Component.update(weapon.id, weapon);
+
+    result.attacker = {
+      id: this.id,
+      name: this.name
+    }
+
+    result.defender = {
+      id: defender.id,
+      name: defender.name,
+      remainingHealth: defender.stats.health
+    }
+
+    this.update();
+
+    if (defender.stats.health <= 0) {
+      result.message += ` ${defender.name} is dead`;
+      defender.delete();
+    } else {
+      defender.update();
+    }
+    
+    return result;
   }
 
   /**
-   * @param {*} source could be a weapon or an asteroid or something else that has a damage value
+   * @param {*} damage
    */
-  takeDamage(source) {
-    // TODO : you have to decide how the damage calculation works
+  async takeDamage(damage, shield) {
+    this.stats.health -= damage;
   }
 
   save() {

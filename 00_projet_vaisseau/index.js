@@ -25,6 +25,16 @@ const traductionError = {
     en : "Error(s) in the request",
     fr : "Erreure(s) dans la requête"
   },
+  no_weapon : {
+    statusCode : 400,
+    en : "Ship doesn't have a weapon",
+    fr : "Le vaisseau n'a pas d'arme"
+  },
+  no_ammo : {
+    statusCode : 400,
+    en : "Weapon doesn't have ammo",
+    fr : "L'arme n'a pas de munition"
+  },
   already_installed : {
     statusCode : 202,
     en : "The requested component is already installed on another ship",

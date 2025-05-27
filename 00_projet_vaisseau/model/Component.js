@@ -8,7 +8,7 @@ const validComponentStats = {
   shield: "shield",
   weapon: "damage",
   radar: "detection",
-  navigation: "manoeuvrability"
+  navigation: "maneuverability"
 }
 
 class Component {
@@ -129,7 +129,7 @@ class Component {
     return new Component(component);
   }
 
-  static async update(id, newData) {
+  static async update(id = this.id, newData = this) {
     const updatedComp = await ComponentModel.findByIdAndUpdate(id, newData, { new: true, runValidators: true });
     if (!updatedComp) {
       throw new Error("component_not_found");

@@ -155,6 +155,25 @@ const ShipController = {
     }).catch((err) => {
       next(err);
     });
+  },
+  attack: async (req, res, next) => {
+    try {
+      const { attackerId, defenderId } = req.body;
+
+      const [ attacker, defender ] = await Promise.all([
+        Ship.getById(attackerId),
+        Ship.getById(defenderId)
+      ]);
+
+      if (!attacker || !defender) {
+        next("bad_request")
+      }
+
+      const result = await attacker.attack(defender);
+      res.status(200).send(result);
+    } catch (err) {
+      next(err.message);
+    }
   }
 };
 export default ShipController;

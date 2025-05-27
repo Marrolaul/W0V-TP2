@@ -17,11 +17,6 @@ ShipRouter.put("/equipComponent/:shipId", ShipController.equipComponent);
 
 ShipRouter.delete("/delete/:shipId", ShipController.remove);
 
-// TODO : you have to implements the routes to use the ships
-ShipRouter.post("/:shipId/attack", () => {
-  // TODO: req.body should somewhat look like : { defenderShipId: ID}
-  // the response could be something like { ammoCount: Number, defenderShip: Ship}
-  // or { currentShip: Ship, defenderShip: Ship}
-});
+ShipRouter.put("/attack", ShipController.attack);
 
 export default ShipRouter;

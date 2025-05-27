@@ -2,7 +2,7 @@ import { Types } from "mongoose";
 import Component from "../model/Component.js";
 
 const ComponentController = {
-  getAll: async (req, res) => {
+  getAll: async (req, res, next) => {
     try {
       const result = await Component.getAll();
       res.status(200).send(result);
@@ -18,7 +18,7 @@ const ComponentController = {
       next(err.message);
     }
   },
-  update: async (req, res) => {
+  update: async (req, res, next) => {
     try {
       const keysToUpdate = Object.keys(req.body);
       const validKeysFound = keysToUpdate.filter(key => Component.validComponentKeys.includes(key))
@@ -34,32 +34,32 @@ const ComponentController = {
       next(err.message);
     }
   },
-  create: async (req, res) => {
+  create: async (req, res, next) => {
     if (!req.body) {
-      return res.status(422).send("bad_request");
+      next("bad_request");
     }
 
     try {
       const result = await Component.create(req.body);
       res.status(201).send(result);
     } catch (err) {
-      res.status(500).send(err.message);
+      next(err.message);
     }
   },
-  batchCreate: async (req, res) => {
+  batchCreate: async (req, res, next) => {
     try {
       const result = await Component.batchCreate();
       res.status(201).send(result);
     } catch (err) {
-      res.status(500).send(err.message);
+      next(err.message);
     }
   },
-  delete: async (req, res) => {
+  delete: async (req, res, next) => {
     try {
       const result = await Component.delete(req.params.id)
       res.status(200).send("Component successfully deleted\n\n" + result);
     } catch (err) {
-      res.status(500).send(err.message)
+      next(err.message)
     }
   }
 };
