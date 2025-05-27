@@ -38,7 +38,17 @@ const traductionError = {
   already_installed : {
     statusCode : 202,
     en : "The requested component is already installed on another ship",
-    fr : "La pièce demandée est dans un autre vaisseau"
+    fr : "La pièce demandée est installée sur un autre vaisseau"
+  },
+  component_to_remove_not_found : {
+    statusCode : 404,
+    en : "The component to remove on the ship is not in the database",
+    fr : "Le composant à enlever du vaisseau non présent dans la base de données"
+  },
+  update_failed : {
+    statusCode : 500,
+    en : "Error while updating the ship values",
+    fr : "Erreur en mettant à jour les valeurs du vaisseau"
   }
 }
 
