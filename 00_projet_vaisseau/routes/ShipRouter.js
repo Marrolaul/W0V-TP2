@@ -11,12 +11,11 @@ ShipRouter.get("/radar/:shipId", ShipController.detectShips);
 
 ShipRouter.post("/batch",ShipController.batchCreate);
 ShipRouter.post("/create", ShipController.create);
+ShipRouter.post("/attack", ShipController.attack);
 
 ShipRouter.put("/update/:shipId", ShipController.update);
 ShipRouter.put("/equipComponent/:shipId", ShipController.equipComponent);
 
 ShipRouter.delete("/delete/:shipId", ShipController.remove);
-
-ShipRouter.put("/attack", ShipController.attack);
 
 export default ShipRouter;

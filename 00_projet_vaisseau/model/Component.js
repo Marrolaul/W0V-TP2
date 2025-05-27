@@ -2,13 +2,13 @@ import ComponentModel from "./ComponentModel.js";
 import fs from 'fs';
 
 const validComponentStats = {
-  engine: "speed",
-  hull: "hp",
-  thruster: "acceleration",
-  shield: "shield",
-  weapon: "damage",
-  radar: "detection",
-  navigation: "maneuverability"
+  engine: ["speed"],
+  hull: ["health", "stealth"],
+  thruster: ["acceleration"],
+  shield: ["shield"],
+  weapon: ["damage"],
+  radar: ["detection"],
+  navigation: ["maneuverability"]
 }
 
 class Component {
@@ -56,6 +56,10 @@ class Component {
   }
 
   isValidTargetStat() {
+    return validComponentStats[this.type].includes(this.targetStat);
+  }
+
+  isValidTargetStatBackup() {
     return validComponentStats[this.type] === this.targetStat;
   }
 

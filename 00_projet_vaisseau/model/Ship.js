@@ -177,13 +177,13 @@ class Ship {
   }
 
   /**
-   * @param {*} defender could be a ship or an asteroid or something else that has a health value
+   * @param {*} defender
    */
   async attack(defender) {
     const result = {
       success: false,
       message: "",
-      attacker: null,
+      damage: null,
       defender: null
     }
 
@@ -199,21 +199,10 @@ class Ship {
 
     let damage = Number(weapon.value);
 
-    const shieldId = defender.componentSlots.shield;
-    const shieldObj = shieldId ? await Component.getById(shieldId) : null;
-    const shield = shieldObj?.value || 0;
-
-    const hullId = defender.componentSlots.hull;
-    const hullObj = hullId ? await Component.getById(hullId) : null;
-    const hull = hullObj?.value || 0;
-
-    const navigationId = defender.componentSlots.navigation;
-    const navigationObj = navigationId ? await Component.getById(navigationId) : null;
-    const navigation = navigationObj?.value || 0;
-
-    const defense = shield + hull + navigation;
+    const defense = (defender?.stats?.shield || 0)+ (defender?.stats?.navigation || 0);
 
     damage -= defense;
+    result.damage = damage;
 
     if (damage > 0) {
       defender.takeDamage(damage);
@@ -224,18 +213,10 @@ class Ship {
     weapon.use(1);
     await Component.update(weapon.id, weapon);
 
-    result.attacker = {
-      id: this.id,
-      name: this.name
-    }
-
     result.defender = {
-      id: defender.id,
       name: defender.name,
-      remainingHealth: defender.stats.health
+      remainingHealth: defender.stats.health > 0 ? defender.stats.health : 0
     }
-
-    this.update();
 
     if (defender.stats.health <= 0) {
       result.message += ` ${defender.name} is dead`;
@@ -250,7 +231,7 @@ class Ship {
   /**
    * @param {*} damage
    */
-  async takeDamage(damage, shield) {
+  async takeDamage(damage) {
     this.stats.health -= damage;
   }
 
@@ -286,6 +267,12 @@ class Ship {
   delete() {
     return new Promise((res, rej) => {
       ShipModel.deleteOne({_id: this.id}).then(() => {
+        Object.values(this.componentSlots).forEach(id => {
+          if (id !== null) {
+            Component.delete(id);
+          }
+        })
+      }).then(() => {
         return res(`${this.name} has been deleted.`);
       }).catch(() => {
         return rej("internal_error");
