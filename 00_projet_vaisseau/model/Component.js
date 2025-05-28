@@ -77,16 +77,6 @@ class Component {
     Component.update(this.id, this);
   }
 
-  /**
-   * @param {*} source could be a weapon or an asteroid or something else that has a damage value
-   */
-  takeDamage(source) {
-    // TODO : you have to decide how the damage calculation works
-  }
-
-  /**
-   * @param {*} source could be a weapon or an asteroid or something else that has a damage value
-   */
   use(source) {
     this.amount -= source;
 
@@ -129,20 +119,16 @@ class Component {
     return new Component(component);
   }
 
-  /*static async getComponentByType(neededType) {
-      let foundComponent = await ComponentModel.findOne({type: neededType});
-      if(foundComponent == null){
-        throw new Error("component_not_found");
-      }      
-      let componentDoc = await ComponentModel.findById(foundComponent.id);
-      let componentObject = componentDoc.toObject();
-      delete componentObject._id;
-      
-      let componentCopy = new ComponentModel(componentObject);
-      let newComponent = await componentCopy.save();
-
-      return new Component(newComponent);
-  }*/ 
+  static getAllNotInstalled() {
+    return new Promise((res,rej) => {
+      ComponentModel.find({isEquiped: false}).then((result) => {
+        let componentList = result.map(c => new Component(c));
+        return res(componentList);
+      }).catch((err) => {
+        return rej(err);
+      }); 
+    });
+  }
 
   static async update(id = this.id, newData = this) {
     const updatedComp = await ComponentModel.findByIdAndUpdate(id, newData, { new: true, runValidators: true });
