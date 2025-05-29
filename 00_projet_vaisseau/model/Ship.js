@@ -84,6 +84,20 @@ class Ship {
     return allStatsValid;
   }
 
+  installMultipleComponents(components) {
+    components.forEach((component) => {
+      if (!this.componentSlots[component.type]) {
+        this.componentSlots[component.type] = component.id;
+        component.install();
+        if (component.targetStat != "damage")
+        {
+          this.stats[component.targetStat] += component.value;
+        }
+      }
+    });
+    this.update();
+  }
+
   installComponent(componentToInstall) {
     return new Promise((res, rej) => {
       if(componentToInstall.isEquiped == true) {

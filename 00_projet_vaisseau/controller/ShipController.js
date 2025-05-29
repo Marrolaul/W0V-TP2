@@ -1,9 +1,7 @@
-import { Error, Types } from "mongoose";
 import Ship from "../model/Ship.js";
 import {promises as fs} from 'fs';
 import Component from "../model/Component.js";
-import { get } from "http";
-import { arrayBuffer } from "stream/consumers";
+
 
 const batchShips = "./templates/ships.json";
 
@@ -126,6 +124,32 @@ const ShipController = {
       next(err);
     });    
   },
+  batchEquip: (_, res, next) => {
+    const shipsList = Ship.getAllShips();
+    const componentsToInstallList = Component.getAllNotInstalled();
+    const promiseList = [shipsList, componentsToInstallList];
+
+    Promise.all(promiseList).then((data) => {
+      let ships = data[0];
+      let components = data[1];
+      ships.forEach((ship) => {
+        let componentsToInstall = [];
+        for(const [type, value] of Object.entries(ship.componentSlots)) {
+          if (value == null) {
+            let componentToInstall = components.find((component) => component.type == type);
+            if (componentToInstall) {
+              components.splice(components.indexOf(componentToInstall), 1);
+              componentsToInstall.push(componentToInstall);
+            }
+          }
+        }
+        ship.installMultipleComponents(componentsToInstall);
+      });
+      res.status(200).send(ships);
+    }).catch((err) => {
+      next(err);
+    });    
+  },
   remove: (req, res, next) => {
     Ship.getById(req.params.shipId).then((shipFound) => {
       shipFound.delete().then((result) => {
@@ -138,13 +162,16 @@ const ShipController = {
     });
   },
   equipComponent: (req, res, next) => {
-    const getAllData = [];
-    getAllData.push(Ship.getById(req.params.shipId));
-    getAllData.push(Component.getById(req.body.id));
 
-    Promise.all(getAllData).then((resolvedPromises) => {
-      resolvedPromises[0].removeComponent(resolvedPromises[1].type).then((shipToModify) => {
-        shipToModify.installComponent(resolvedPromises[1]).then((modifiedShip) => {
+    const shipPromise = Ship.getById(req.params.shipId);
+    const componentPromise = Component.getById(req.body.id);
+    const promisesList = [shipPromise, componentPromise];
+
+    Promise.all(promisesList).then((resolvedPromises) => {
+      let ship = resolvedPromises[0];
+      let component = resolvedPromises[1];
+      ship.removeComponent(component.type).then((shipToModify) => {
+        shipToModify.installComponent(component).then((modifiedShip) => {
           res.status(202).send(modifiedShip);
         }).catch((err) => {
           next(err);

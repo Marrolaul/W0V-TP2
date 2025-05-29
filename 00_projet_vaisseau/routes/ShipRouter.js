@@ -15,6 +15,7 @@ ShipRouter.post("/attack", ShipController.attack);
 
 ShipRouter.put("/update/:shipId", ShipController.update);
 ShipRouter.put("/equipComponent/:shipId", ShipController.equipComponent);
+ShipRouter.put("/batch/equipShips", ShipController.batchEquip);
 
 ShipRouter.delete("/delete/:shipId", ShipController.remove);
 
